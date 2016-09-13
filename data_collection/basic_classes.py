@@ -76,3 +76,28 @@ class StockInfo(BaseModel):
     name = Column(String(20))
     industry = Column(String(20))
     area = Column(String(20))
+
+class Beta(BaseModel):
+    __tablename__ = "beta"
+    __table_args__ = {
+        'mysql_charset' : 'utf8'
+    }
+    rid = Column(Integer, primary_key=True)
+    sec_codes = Column(String(6))
+    sample = Column(Integer)
+    beta = Column(Float)
+    beta_lowerbound = Column(Float)
+    beta_upperbound = Column(Float)
+    alpha = Column(Float)
+    alpha_lowerbound = Column(Float)
+    alpha_upperbound = Column(Float)
+
+class Covariance(BaseModel):
+    __tablename__ = "covariance"
+    __table_args = {
+        'mysql_charset' : 'utf8'
+    }
+    rid = Column(Integer, primary_key=True)
+    sec_codes1 = Column(String(6))
+    sec_codes2 = Column(String(6))
+    cov = Column(Float)

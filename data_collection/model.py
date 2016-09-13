@@ -16,6 +16,7 @@ import string
 import time
 import datetime
 import os
+import math
 
 #Connect Mysql
 engine = create_engine(const.DB_CONNECT_STRING % (const.USERNAME, const.PASSWORD), encoding="utf8", convert_unicode=True)
@@ -56,11 +57,14 @@ def getPeriodData(start, end):
             continue
         timeperiod = list(item.index)
         for t in timeperiod:
-            session.add(Market(sec_codes = s, trade_date = t,\
+            try:
+                session.add(Market(sec_codes = s, trade_date = t,\
                     topen = item['open'][t], tclose = item['close'][t],\
                     thigh = item['high'][t], tlow = item['low'][t], \
                     tvolume = item['volume'][t], tvalue = float(item2['amount'][t] / 1000.0),\
                     chng = item['price_change'][t],  chng_pct = item['p_change'][t]))
+            except TypeError:
+                pass
         session.commit()
 
 def getIndexPeriodData(start, end):
@@ -204,8 +208,11 @@ def getStockInfo():
     res = ts.get_stock_basics().iloc[:, :3]
     inx = res.index
     for i in range(0, res.shape[0]):
+        for key in ['name', 'industry', 'area']:
+            if not isinstance(res.iloc[i][key], str):
+                res.iloc[i][key] = None
         session.add(StockInfo(sec_codes=inx[i], name=res.iloc[i]['name'],\
-                industry=res.iloc[i]['industry'], area=res.iloc[i]['area']))
+            industry=res.iloc[i]['industry'], area=res.iloc[i]['area']))
     session.commit()
 
 if __name__ == "__main__":
