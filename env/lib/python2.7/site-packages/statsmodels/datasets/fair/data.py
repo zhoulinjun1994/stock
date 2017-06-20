@@ -8,7 +8,7 @@ COPYRIGHT   = """Included with permission of the author."""
 TITLE       = """Affairs dataset"""
 SOURCE      = """
 Fair, Ray. 1978. "A Theory of Extramarital Affairs," `Journal of Political
-    Economy`, February, 45-61.
+Economy`, February, 45-61.
 
 The data is available at http://fairmodel.econ.yale.edu/rayfair/pdf/2011b.htm
 """
@@ -78,6 +78,6 @@ def load_pandas():
 def _get_data():
     filepath = dirname(abspath(__file__))
     ##### EDIT THE FOLLOWING TO POINT TO DatasetName.csv #####
-    data = np.recfromtxt(open(filepath + '/fair.csv', 'rb'),
-            delimiter=",", names = True, dtype=float)
+    with open(filepath + '/fair.csv', 'rb') as f:
+        data = np.recfromtxt(f, delimiter=",", names=True, dtype=float)
     return data

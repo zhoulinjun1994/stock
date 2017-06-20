@@ -11,6 +11,7 @@ import argparse
 import time
 import sys
 import numpy as np
+from util import *
 sys.path.append("..")
 from data_collection.basic_classes import *
 from data_collection.const import *
@@ -31,6 +32,8 @@ class Stock:
         elif(tp == "index"):
             self.name = ""
         self.getData(tp)
+        recover_factor = getRecoverFactor(self.df['tclose'], self.df['chng_pct'])
+        self.df['rec_factor'] = pd.Series(recover_factor).values
 
     def getData(self, tp):
         sql = ""
@@ -39,7 +42,8 @@ class Stock:
         elif(tp == "index"):
             sql = session.query(Index).filter(Index.sec_codes == self.sec_codes)
         result = pd.read_sql(sql.statement, sql.session.bind)
-        self.df = result.set_index('trade_date')
+        self.df = result.drop_duplicates(['trade_date'], keep='last').set_index('trade_date') \
+                .sort_index()
 
     def profile(self):
         print self.df.describe()

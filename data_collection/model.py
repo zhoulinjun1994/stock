@@ -46,13 +46,26 @@ def getPeriodData(start, end):
     stock_list = list(ts.get_stock_basics().index)
     total = len(stock_list)
     cnt = 0
+    flag = False
     for s in stock_list:
+        if s == '601965':
+            flag = True
+        if not flag:
+            continue
         print "Current Stock Number: " + s
         cnt += 1
         if(cnt % 100 == 0):
             view_bar(cnt, total)
-        item = ts.get_hist_data(code=s, start=starttimestr, end=endtimestr)
-        item2 = ts.get_h_data(code=s, start=starttimestr, end=endtimestr)
+        try:
+            item = ts.get_hist_data(code=s, start=starttimestr, end=endtimestr)
+            item2 = ts.get_h_data(code=s, start=starttimestr, end=endtimestr)
+        except Exception, e:
+            try:
+                item = ts.get_hist_data(code=s, start=starttimestr, end=endtimestr)
+                item2 = ts.get_h_data(code=s, start=starttimestr, end=endtimestr)
+            except Exception, e:
+                print e
+                continue
         if(item is None or item2 is None):
             continue
         timeperiod = list(item.index)

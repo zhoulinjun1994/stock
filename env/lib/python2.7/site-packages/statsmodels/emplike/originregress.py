@@ -16,6 +16,7 @@ General References
 Owen, A.B. (2001). Empirical Likelihood.  Chapman and Hall. p. 82.
 
 """
+from __future__ import division
 
 import numpy as np
 from scipy.stats import chi2
@@ -56,7 +57,7 @@ class ELOriginRegress(object):
     def __init__(self, endog, exog):
         self.endog = endog
         self.exog = exog
-        self.nobs = float(self.exog.shape[0])
+        self.nobs = self.exog.shape[0]
         try:
             self.nvar = float(exog.shape[1])
         except IndexError:
@@ -68,7 +69,7 @@ class ELOriginRegress(object):
 
         Returns
         -------
-        Results: class
+        Results : class
             Empirical likelihood regression class
 
         """
@@ -137,20 +138,20 @@ class OriginResults(RegressionResults):
     Examples
     --------
     >>> import statsmodels.api as sm
-    >>> import numpy as np
     >>> data = sm.datasets.bc.load()
-    >>> model = sm.emplike.OriginRegress(data.endog, data.exog)
+    >>> model = sm.emplike.ELOriginRegress(data.endog, data.exog)
     >>> fitted = model.fit()
-    >>> fitted.params
-    >>> array([ 0.        ,  0.00351813])
-    >>> #  The 0 is the intercept term.
+    >>> fitted.params #  0 is the intercept term.
+    array([ 0.        ,  0.00351813])
+
     >>> fitted.el_test(np.array([.0034]), np.array([1]))
-    >>> (3.6696503297979302, 0.055411808127497755)
+    (3.6696503297979302, 0.055411808127497755)
     >>> fitted.conf_int_el(1)
-    >>> (0.0033971871114706867, 0.0036373150174892847
+    (0.0033971871114706867, 0.0036373150174892847)
+
+    # No covariance matrix so normal inference is not valid
     >>> fitted.conf_int()
-    >>> TypeError: unsupported operand type(s) for *: 'instancemethod' and 'float'
-    >>> # No covariance matrix so normal inference is not valid
+    TypeError: unsupported operand type(s) for *: 'instancemethod' and 'float'
 
     """
     def __init__(self, model, params, est_llr, llf_el):

@@ -408,7 +408,7 @@ class StateSpaceModel(object):
             The first guess on all parameters to be estimated.  This can
             be in any order as long as the F,A,H,Q, and R functions handle
             the parameters appropriately.
-        xi10 : arry-like
+        xi10 : array-like
             The (r x 1) vector of initial states.  See notes.
         F,A,H,Q,R : functions or array-like, optional
             If functions, they should take start_params (or the current
@@ -828,7 +828,8 @@ if __name__ == "__main__":
         dk = zipfile.ZipFile('/home/skipper/statsmodels/statsmodels-skipper/scikits/statsmodels/sandbox/tsa/DK-data.zip')
     except:
         raise IOError("Install DK-data.zip from http://www.ssfpack.com/DKbook.html or specify its correct local path.")
-    nile = dk.open('Nile.dat').readlines()
+    with dk.open('Nile.dat') as f:
+        nile = f.readlines()
     nile = [float(_.strip()) for _ in nile[1:]]
     nile = np.asarray(nile)
 #    v = np.zeros_like(nile)
@@ -852,7 +853,8 @@ if __name__ == "__main__":
 #                Q=Q, R=R, penalty=False, ntrain=0)
 
 # p. 162 univariate structural time series example
-    seatbelt = dk.open('Seatbelt.dat').readlines()
+    with dk.open('Seatbelt.dat') as f:
+        seatbelt = f.readlines()
     seatbelt = [lmap(float,_.split()) for _ in seatbelt[2:]]
     sb_ssm = StateSpaceModel(seatbelt)
     s = 12 # monthly data
